@@ -124,7 +124,7 @@ def get_pipeline(
     processing_instance_type = ParameterString(name="ProcessingInstanceType", default_value="ml.m5.4xlarge")
     
     # replace this with an url to your custom container: https://docs.aws.amazon.com/sagemaker/latest/dg/processing-container-run-scripts.html
-    preprocessing_image_uri = '952321047822.dkr.ecr.us-east-1.amazonaws.com/sagemaker-preprocessing-container:latest'
+    preprocessing_image_uri = '<account-id>.dkr.ecr.<region>.amazonaws.com/sagemaker-preprocessing-container:latest'
     
     # parameters for training
     training_instance_type = ParameterString(name="TrainingInstanceType", default_value="ml.m5.xlarge")
