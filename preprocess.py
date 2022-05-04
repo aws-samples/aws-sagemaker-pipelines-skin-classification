@@ -183,7 +183,7 @@ if __name__ == "__main__":
     logger.debug("Starting preprocessing.")
     
     # upload HAM10000.zip to bucket and replace with your paths here
-    skin_cancer_bucket='monai-bucket-skin-cancer' #replace this
+    skin_cancer_bucket='bucket-skin-cancer' #replace this
     skin_cancer_bucket_path='skin_cancer_bucket_path' #replace this
     skin_cancer_files='dataverse_files' #replace this
     skin_cancer_files_ext='dataverse_files.zip' #replace this
@@ -411,14 +411,6 @@ if __name__ == "__main__":
             image_temp = image_temp.resize(img_size, Image.ANTIALIAS)
             images_list_train.append(np.asarray(image_temp))
                                       
-    print('Images by Class')
-    print('nv: '+str(len(os.listdir(train_dir +'/nv'))))
-    print('mel: '+str(len(os.listdir(train_dir +'/mel'))))
-    print('bkl: '+str(len(os.listdir(train_dir +'/bkl'))))
-    print('bcc: '+str(len(os.listdir(train_dir +'/bcc'))))
-    print('akiec: '+str(len(os.listdir(train_dir +'/akiec'))))
-    print('vasc: '+str(len(os.listdir(train_dir +'/vasc'))))
-    print('df: '+str(len(os.listdir(train_dir +'/df'))))
     
     # since we were not augmenting the validation split, we will split it into test and validation dataset
     image_files = [[os.path.join(val_dir, class_name, x) 
@@ -442,8 +434,6 @@ if __name__ == "__main__":
             images_list_val.append(np.asarray(image_temp))
             image_label_list_val.append(i)
          
-    print(len(image_label_list_train), len(image_label_list_val), len(image_label_list_test))
-    
     write_to_recordio(images_list_val, image_label_list_val, prefix="data/val")
     write_to_recordio(images_list_test, image_label_list_test, prefix="data/test")
     write_to_recordio(images_list_train,image_label_list_train, prefix="data/train")
