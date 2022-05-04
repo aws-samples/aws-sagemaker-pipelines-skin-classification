@@ -29,7 +29,7 @@ from sklearn.model_selection import train_test_split
 import mxnet as mx
 from tqdm import tqdm
 from numpy.random import seed
-seed(101)
+seed(123)
 import zipfile
 
 logger = logging.getLogger()
