@@ -38,12 +38,8 @@ Please note that AmazonSageMakerExecutionRole and AmazonSageMakerServiceCatalogP
 
 Since we will be using mxnet and opencv in our preprocessing step, we would need to build a custom container. Currently Docker is not supported by the AWS SageMaker Studio, so we are going to build a container from AWS SageMaker Jupyter Notebook:
 
-1. Create a notebook instance in AWS SageMaker with minimum **20 Gb of storage, instance type ml.t3.medium**, and create a new execution role and attach the following permissions to it:
-    1. AmazonEC2ContainerRegistryFullAccess
-    2. AmazonS3FullAccess
-    3. AmazonSageMakerFullAccess
-    4. EC2InstanceProfileForImageBuilderECRContainerBuilds
-    5. AWSAppRunnerServicePolicyForECRAccess
+1. Create an IAM policy using sm-execution-role-iam-poiny.json
+2. Create a notebook instance in AWS SageMaker with minimum **20 GB of storage, instance type ml.t3.medium**, and attach the previously created policy.
 2. Copy the Build-docker.ipynb notebook and docker folder and run it. This will create a docker image for the data preprocessing step and push it to ECR registry.
 3. Save the URL of the container image for later use.
 
@@ -51,7 +47,7 @@ Since we will be using mxnet and opencv in our preprocessing step, we would need
 
 1. Create a folder inside the default bucket
 
-2. Make sure [AmazonS3FullAccess](https://console.aws.amazon.com/iam/home#/policies/arn:aws:iam::aws:policy/AmazonS3FullAccess) policy is attached to the SageMaker Studio execution role.
+2. Make sure the SageMaker Studio execution role has access to the default bucket as well as the bucket containing the dataset.
 
 3.  From the list of projects, choose the one that was just created.
 
