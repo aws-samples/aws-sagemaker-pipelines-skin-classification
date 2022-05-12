@@ -217,16 +217,6 @@
         {
             "Effect": "Allow",
             "Action": [
-                "s3:GetObject"
-            ],
-            "Resource": [
-                "<s3-bucket-with-monai-data>/*",
-                "arn:aws:s3:::ec2imagebuilder*"
-            ]
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
                 "s3:GetBucketAcl",
                 "s3:PutObjectAcl"
             ],
