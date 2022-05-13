@@ -72,13 +72,14 @@ Since we will be using mxnet and opencv in our preprocessing step, we would need
 9. Update the preprocess.py file (lines 183-186) with the S3 location (SKIN_CANCER_BUCKET) and folder name (SKIN_CANCER_BUCKET_PATH) where the dataverse_files.zip archive was uploaded to S3 at the end of the **Step II**:
 
 * **skin_cancer_bucket**='monai-bucket-skin-cancer' (*replace this with your bucket name*)
-* **skin_cancer_bucket_path**='skin_cancer_bucket_path' (*replace this with path created inside the bucket without the bucket name and the last*)
+* **skin_cancer_bucket_path**='skin_cancer_bucket_prefix' (*replace this with the prefix to the dataset inside the bucket*)
 * **skin_cancer_files**='dataverse_files' (*replace this with name of the zip <ins>without</ins> extention*)
 * **skin_cancer_files_ext**='dataverse_files.zip' (*replace this with name of the zip with extention*)
 
+In the example above, the dataset would be stored under: `s3://monai-bucket-skin-cancer/skin_cancer_bucket_prefix/dataverse_files.zip`
 ![alt text](<pictures/Screenshot 2022-02-09 at 11.02.08.png>)
 
-10. Update line 129 in pipelines.py with URI of your docker created in **Step3.3**
+10. Update line 127 in pipelines.py with URI of your docker created in **Step3.3**
 `preprocessing_image_uri = <uri-to-your-ecr-container>`
 
 #### V. Triggering a pipeline run  

@@ -184,7 +184,7 @@ if __name__ == "__main__":
     
     # upload HAM10000.zip to bucket and replace with your paths here
     skin_cancer_bucket='bucket-skin-cancer' #replace this
-    skin_cancer_bucket_path='skin_cancer_bucket_path' #replace this
+    skin_cancer_bucket_prefix='skin_cancer_bucket_prefix' #replace this
     skin_cancer_files='dataverse_files' #replace this
     skin_cancer_files_ext='dataverse_files.zip' #replace this
     base_dir = "./" 
@@ -229,8 +229,8 @@ if __name__ == "__main__":
     os.mkdir(base_dir+skin_cancer_files+'/HAM_images_part_1')
     os.mkdir(base_dir+skin_cancer_files+'/HAM_images_part_2')
     
-    s3.download_file(skin_cancer_bucket, skin_cancer_bucket_path+'/'+skin_cancer_files_ext,base_dir+skin_cancer_files_ext)
-    
+    s3.download_file(skin_cancer_bucket, os.path.jion(skin_cancer_bucket_prefix, skin_cancer_files_ext) , os.path.join(base_dir+skin_cancer_files_ext))
+     
     extract_archive(base_dir+skin_cancer_files_ext, base_dir+skin_cancer_files)
     extract_archive(base_dir+skin_cancer_files+'/HAM10000_images_part_1.zip', base_dir+skin_cancer_files+'/HAM_images_part_1')
     extract_archive(base_dir+skin_cancer_files+'/HAM10000_images_part_2.zip', base_dir+skin_cancer_files+'/HAM_images_part_2')
