@@ -30,32 +30,29 @@ Amazon SageMaker is a fully-managed service for building, training an deploying 
 1. Go to [link](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/DBW86T)
 2. Select "**Access Dataset**" in top right, and review the license Creative Commons Attribution-NonCommercial 4.0 International Public License.
 3. If you accept license, then select "**Original Format Zip**" and download the zip.
-4. [Create S3 bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html) and upload dataverse_files.zip to it. Save the S3 bucket path for later use.
+4. [Create S3 bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html) and choose a name starting with "sagemaker" (this will allow SageMaker to access the bucket without any extra permissions) and upload dataverse_files.zip to it. Save the S3 bucket path for later use.
 5. Make a note of the name of the bucket you have stored the data in, and the names of any subsequent folders, they will be needed later.
-Please note that AmazonSageMakerExecutionRole and AmazonSageMakerServiceCatalogProductsUseRole that are used by SageMaker Studio users have access to S3 buckets with names starting with sagemaker or aws-glue only. So make sure to add permissions to access the S3 bucket containing the data (dataverse_files.zip) to the execution role you are using for the SageMaker Studio user.
+
 
 #### III. Creating a custom Docker image for data preprocessing
 
 Since we will be using mxnet and opencv in our preprocessing step, we would need to build a custom container. Currently Docker is not supported by the AWS SageMaker Studio, so we are going to build a container from AWS SageMaker Jupyter Notebook:
 
-1. Create a notebook instance in AWS SageMaker with minimum **20 Gb of storage, instance type ml.t3.medium**, and create a new execution role and attach the following permissions to it:
-    1. AmazonEC2ContainerRegistryFullAccess
-    2. AmazonS3FullAccess
-    3. AmazonSageMakerFullAccess
-    4. EC2InstanceProfileForImageBuilderECRContainerBuilds
-    5. AWSAppRunnerServicePolicyForECRAccess
-2. Copy the Build-docker.ipynb notebook and docker folder and run it. This will create a docker image for the data preprocessing step and push it to ECR registry.
-3. Save the URL of the container image for later use.
+1. Create an IAM policy using sm-execution-role-iam-policy.json
+2. Create a role for SageMaker and select Execution use case (this will add AmazonSageMakerFullAccess policy to the role). Upon role creation attach the previously created policy.
+3. Create a notebook instance in AWS SageMaker with minimum **20 GB of storage, instance type ml.t3.medium**, and use the previously created role as execution role.
+4. Copy the Build-docker.ipynb notebook and docker folder and run it. This will create a docker image for the data preprocessing step and push it to ECR registry.
+5. Save the URL of the container image for later use.
 
 #### IV. Changing the Pipelines template  
 
 1. Create a folder inside the default bucket
 
-2. Make sure [AmazonS3FullAccess](https://console.aws.amazon.com/iam/home#/policies/arn:aws:iam::aws:policy/AmazonS3FullAccess) policy is attached to the SageMaker Studio execution role.
+2. Make sure the SageMaker Studio execution role has access to the default bucket as well as the bucket containing the dataset.
 
-3.  From the list of projects, choose the one that was just created.
+3. From the list of projects, choose the one that was just created.
 
-5.  On the **Repositories** tab, you can select the hyperlinks to locally clone the **CodeCommit** repositories to your local SageMaker Studio instance.
+5. On the **Repositories** tab, you can select the hyperlinks to locally clone the **CodeCommit** repositories to your local SageMaker Studio instance.
 
 ![alt text](<pictures/Screenshot 2022-02-09 at 10.58.07.png>)
 
