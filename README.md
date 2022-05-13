@@ -73,7 +73,9 @@ Since we will be using mxnet and opencv in our preprocessing step, we would need
 * **skin_cancer_files**='dataverse_files' (*replace this with name of the zip <ins>without</ins> extention*)
 * **skin_cancer_files_ext**='dataverse_files.zip' (*replace this with name of the zip with extention*)
 
-In the example above, the dataset would be stored under: `s3://monai-bucket-skin-cancer/skin_cancer_bucket_prefix/dataverse_files.zip`
+In the example above, the dataset would be stored under:
+`s3://monai-bucket-skin-cancer/skin_cancer_bucket_prefix/dataverse_files.zip`
+
 ![alt text](<pictures/Screenshot 2022-02-09 at 11.02.08.png>)
 
 10. Update line 127 in pipelines.py with URI of your docker created in **Step3.3**
