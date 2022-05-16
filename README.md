@@ -30,7 +30,7 @@ Amazon SageMaker is a fully-managed service for building, training an deploying 
 1. Go to [link](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/DBW86T)
 2. Select "**Access Dataset**" in top right, and review the license Creative Commons Attribution-NonCommercial 4.0 International Public License.
 3. If you accept license, then select "**Original Format Zip**" and download the zip.
-4. [Create S3 bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html) and choose a name starting with "sagemaker" (this will allow SageMaker to access the bucket without any extra permissions) and upload dataverse_files.zip to it. Save the S3 bucket path for later use.
+4. [Create S3 bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html) and choose a name starting with "sagemaker" (this will allow SageMaker to access the bucket without any extra permissions). You can enable access logigng and encryption for securtiy best practices. Upload dataverse_files.zip to it. Save the S3 bucket path for later use.
 5. Make a note of the name of the bucket you have stored the data in, and the names of any subsequent folders, they will be needed later.
 
 
@@ -40,7 +40,7 @@ Since we will be using mxnet and opencv in our preprocessing step, we would need
 
 1. Create an IAM policy using sm-execution-role-iam-policy.json
 2. Create a role for SageMaker and select Execution use case (this will add AmazonSageMakerFullAccess policy to the role). Upon role creation attach the previously created policy.
-3. Create a notebook instance in AWS SageMaker with minimum **20 GB of storage, instance type ml.t3.medium**, and use the previously created role as execution role.
+3. Create a notebook instance in AWS SageMaker with minimum **20 GB of storage, instance type ml.t3.medium**, and use the previously created role as execution role. You can choose to create the notebook instance inside a VPC and encrypt the storage volume(s) for security best practices.
 4. Copy the Build-docker.ipynb notebook and docker folder and run it. This will create a docker image for the data preprocessing step and push it to ECR registry.
 5. Save the URL of the container image for later use.
 
