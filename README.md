@@ -15,12 +15,12 @@ Amazon SageMaker is a fully-managed service for building, training an deploying 
 1.  Open [SageMaker Studio](https://docs.aws.amazon.com/sagemaker/latest/dg/studio.html). This can be done for existing users or while creating new ones. For a detailed how-to set up SageMaker Studio go [here](https://docs.aws.amazon.com/sagemaker/latest/dg/onboard-quick-start.html).
 2. In [SageMaker Studio](https://docs.aws.amazon.com/sagemaker/latest/dg/studio-launcher.html), you can choose the **Projects** menu on the [SageMaker resources](https://docs.aws.amazon.com/sagemaker/latest/dg/studio-ui.html)** menu.
 
-<img src="pictures/screenshot sm resources.png" width="300">
+<img src="pictures/screenshot sm resources.PNG" width="300">
 
 
 3. On the projects page, you can launch a pre-configured SageMaker MLOps template. Choose **MLOps template for model building, training, and deployment**.
 
-![alt text](<pictures/screenshot create sm project.png>)
+![alt text](<pictures/screenshot create sm project.PNG>)
 
 4. In the next page provide Project Name and short Description and select **Create Project**. The project will take a while to be created.
 
@@ -88,7 +88,7 @@ Pushing committed changes to the CodeCommit repository (done on the Studio sourc
 2. Navigate back to the project and select the **Pipelines** section.
 3. If you double click on the executing pipelines, the steps of the pipeline will appear. You will be able to monitor the step that is currently running.
 
-![alt text](<pictures/screenshot pipeline execution.png>)
+![alt text](<pictures/screenshot pipeline execution.PNG>)
 
 4.  When the pipeline is complete, you can go back to the project screen and choose the **Model groups** tab. You can then inspect the metadata attached to the model artifacts.
 
