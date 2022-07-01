@@ -30,13 +30,14 @@ Amazon SageMaker is a fully-managed service for building, training an deploying 
 1. Go to [Harvard DataVerse](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/DBW86T)
 2. Select "**Access Dataset**" in top right, and review the license Creative Commons Attribution-NonCommercial 4.0 International Public License.
 3. If you accept license, then select "**Original Format Zip**" and download the zip.
-4. [Create S3 bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html) and choose a name starting with "sagemaker" (this will allow SageMaker to access the bucket without any extra permissions) and upload dataverse_files.zip to it. Save the S3 bucket path for later use.
+4. [Create S3 bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html) and choose a name starting with "sagemaker" (this will allow SageMaker to access the bucket without any extra permissions). You can enable access logigng and encryption for securtiy best practices. Upload dataverse_files.zip to it. Save the S3 bucket path for later use.
 5. Make a note of the name of the bucket you have stored the data in, and the names of any subsequent folders, they will be needed later.
 
 
 #### III. Preparing for data preprocessing
 
 Since we will be using MXNet and OpenCV in our preprocessing step, we use a pre-built MXNet docker image and install the remaining dependencies using the requirements.txt file. To do so, you need to copy it and paste it under `pipelines/skin` in the **modelbuild** repository. 
+
 
 #### IV. Changing the Pipelines template  
 
