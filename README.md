@@ -13,36 +13,30 @@ Amazon SageMaker is a fully-managed service for building, training an deploying 
 #### I. AWS SageMaker Studio setup
 
 1.  Open [SageMaker Studio](https://docs.aws.amazon.com/sagemaker/latest/dg/studio.html). This can be done for existing users or while creating new ones. For a detailed how-to set up SageMaker Studio go [here](https://docs.aws.amazon.com/sagemaker/latest/dg/onboard-quick-start.html).
-2. In [SageMaker Studio](https://docs.aws.amazon.com/sagemaker/latest/dg/studio-launcher.html), you can choose the **Projects** menu on the **[Components and registries](https://docs.aws.amazon.com/sagemaker/latest/dg/studio-ui.html)** menu.
+2. In [SageMaker Studio](https://docs.aws.amazon.com/sagemaker/latest/dg/studio-launcher.html), you can choose the **Projects** menu on the [SageMaker resources](https://docs.aws.amazon.com/sagemaker/latest/dg/studio-ui.html)** menu.
 
-<img src="pictures/Screenshot 2022-02-09 at 10.53.05.png" width="300">
+<img src="pictures/screenshot sm resources.png" width="300">
 
 
 3. On the projects page, you can launch a pre-configured SageMaker MLOps template. Choose **MLOps template for model building, training, and deployment**.
 
-![alt text](<pictures/Screenshot 2022-02-09 at 10.54.03.png>)
+![alt text](<pictures/screenshot create sm project.png>)
 
 4. In the next page provide Project Name and short Description and select **Create Project**. The project will take a while to be created.
 
 
 #### II. Prepare the dataset
 
-1. Go to [link](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/DBW86T)
+1. Go to [Harvard DataVerse](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/DBW86T)
 2. Select "**Access Dataset**" in top right, and review the license Creative Commons Attribution-NonCommercial 4.0 International Public License.
 3. If you accept license, then select "**Original Format Zip**" and download the zip.
 4. [Create S3 bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html) and choose a name starting with "sagemaker" (this will allow SageMaker to access the bucket without any extra permissions) and upload dataverse_files.zip to it. Save the S3 bucket path for later use.
 5. Make a note of the name of the bucket you have stored the data in, and the names of any subsequent folders, they will be needed later.
 
 
-#### III. Creating a custom Docker image for data preprocessing
+#### III. Preparing for data preprocessing
 
-Since we will be using mxnet and opencv in our preprocessing step, we would need to build a custom container. Currently Docker is not supported by the AWS SageMaker Studio, so we are going to build a container from AWS SageMaker Jupyter Notebook:
-
-1. Create an IAM policy using sm-execution-role-iam-policy.json
-2. Create a role for SageMaker and select Execution use case (this will add AmazonSageMakerFullAccess policy to the role). Upon role creation attach the previously created policy.
-3. Create a notebook instance in AWS SageMaker with minimum **20 GB of storage, instance type ml.t3.medium**, and use the previously created role as execution role.
-4. Copy the Build-docker.ipynb notebook and docker folder and run it. This will create a docker image for the data preprocessing step and push it to ECR registry.
-5. Save the URL of the container image for later use.
+Since we will be using MXNet and OpenCV in our preprocessing step, we use a pre-built MXNet docker image and install the remaining dependencies using the requirements.txt file. To do so, you need to copy it and paste it under `pipelines/skin` in the **modelbuild** repository. 
 
 #### IV. Changing the Pipelines template  
 
@@ -54,7 +48,7 @@ Since we will be using mxnet and opencv in our preprocessing step, we would need
 
 5. On the **Repositories** tab, you can select the hyperlinks to locally clone the **CodeCommit** repositories to your local SageMaker Studio instance.
 
-![alt text](<pictures/Screenshot 2022-02-09 at 10.58.07.png>)
+![alt text](<pictures/screenshot project created.png>)
 
 5. Navigate to the **pipelines** directory inside the **modelbuild** directory and rename the **abalone** directory to **skin**.
 6. Now open the **codebuild-buildspec.yml** file in the **modelbuild** directory and modify the run pipeline path from **run-pipeline —module-name pipelines.abalone.pipeline** (line 15) to this:
@@ -64,7 +58,7 @@ Since we will be using mxnet and opencv in our preprocessing step, we would need
 7. Save the file.
 8. Replace 3 files in the Pipeline directory pipelines.py, preprocess.py and evaluate.py with the files from this repository.
 
-<img src="pictures/Screenshot 2022-02-09 at 11.00.24.png" width="300">
+<img src="pictures/screenshot folder structure.png" width="300">
 
 9. Update the preprocess.py file (lines 183-186) with the S3 location (SKIN_CANCER_BUCKET) and folder name (SKIN_CANCER_BUCKET_PATH) where the dataverse_files.zip archive was uploaded to S3 at the end of the **Step II**:
 
@@ -76,24 +70,24 @@ Since we will be using mxnet and opencv in our preprocessing step, we would need
 In the example above, the dataset would be stored under:
 `s3://monai-bucket-skin-cancer/skin_cancer_bucket_prefix/dataverse_files.zip`
 
-![alt text](<pictures/Screenshot 2022-02-09 at 11.02.08.png>)
+![alt text](<pictures/screenshot dataset file.png>)
 
 10. Update line 127 in pipelines.py with URI of your docker created in **Step3.3**
 `preprocessing_image_uri = <uri-to-your-ecr-container>`
 
 #### V. Triggering a pipeline run  
 Pushing committed changes to the CodeCommit repository (done on the Studio source control tab) triggers a new pipeline run, because an Amazon EventBridge event monitors for commits. We can monitor the run by choosing the pipeline inside the SageMaker project.  
-![alt text](<pictures/Screenshot 2022-02-09 at 11.02.08.png>)
+![alt text](<pictures/screenshot commit and push.png>)
 
 1.  To commit the changes, navigate to the Git Section on the left panel and follow the steps:
-    a.  Stage all changes
-    b.  Commit the changes by providing a Summary and your Name and an email address
+    a.  Stage all changes. You don't need to keep track of the -checkpoint file. You can add an entry to .gitignore file with `*checkpoint.*` to ignore them.
+    b.  Commit the changes by providing a Summary and your Name and an email address.
     c.  Push the changes.
 
 2. Navigate back to the project and select the **Pipelines** section.
 3. If you double click on the executing pipelines, the steps of the pipeline will appear. You will be able to monitor the step that is currently running.
 
-![alt text](<pictures/Screenshot 2022-02-09 at 11.06.47.png>)
+![alt text](<pictures/screenshot pipeline execution.png>)
 
 4.  When the pipeline is complete, you can go back to the project screen and choose the **Model groups** tab. You can then inspect the metadata attached to the model artifacts.
 
@@ -101,7 +95,7 @@ Pushing committed changes to the CodeCommit repository (done on the Studio sourc
 
 6. To deploy the endpoint into production, go to CodePipeline, click on the **modeldeploy** pipeline which is currently in progress. At the end of the DeployStaging phase, you need to manually approve the deployment. Once it is done you will see the production endpoint being deployed in the SageMaker Endpoints. After a while the endpoint will also be **InService**.
 
-![alt text](<pictures/Screenshot 2022-02-09 at 11.17.32.png>)
+![alt text](<pictures/screenshot DeployStaging step.png>)
 
 
 ### <ins> Dataset </ins>
