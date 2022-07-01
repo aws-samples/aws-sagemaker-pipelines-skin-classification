@@ -17,7 +17,6 @@ Amazon SageMaker is a fully-managed service for building, training an deploying 
 
 <img src="pictures/screenshot sm resources.PNG" width="300">
 
-
 3. On the projects page, you can launch a pre-configured SageMaker MLOps template. Choose **MLOps template for model building, training, and deployment**.
 
 ![alt text](<pictures/screenshot create sm project.PNG>)
@@ -42,11 +41,8 @@ Since we will be using MXNet and OpenCV in our preprocessing step, we use a pre-
 #### IV. Changing the Pipelines template  
 
 1. Create a folder inside the default bucket
-
 2. Make sure the SageMaker Studio execution role has access to the default bucket as well as the bucket containing the dataset.
-
 3. From the list of projects, choose the one that was just created.
-
 5. On the **Repositories** tab, you can select the hyperlinks to locally clone the **CodeCommit** repositories to your local SageMaker Studio instance.
 
 ![alt text](<pictures/screenshot project created.png>)
@@ -63,27 +59,26 @@ Since we will be using MXNet and OpenCV in our preprocessing step, we use a pre-
 
 9. Update the preprocess.py file (lines 183-186) with the S3 location (SKIN_CANCER_BUCKET) and folder name (SKIN_CANCER_BUCKET_PATH) where the dataverse_files.zip archive was uploaded to S3 at the end of the **Step II**:
 
-* **skin_cancer_bucket**='monai-bucket-skin-cancer' (*replace this with your bucket name*)
-* **skin_cancer_bucket_path**='skin_cancer_bucket_prefix' (*replace this with the prefix to the dataset inside the bucket*)
-* **skin_cancer_files**='dataverse_files' (*replace this with name of the zip <ins>without</ins> extention*)
-* **skin_cancer_files_ext**='dataverse_files.zip' (*replace this with name of the zip with extention*)
+* `skin_cancer_bucket='monai-bucket-skin-cancer'` (*replace this with your bucket name*)
+* `skin_cancer_bucket_path='skin_cancer_bucket_prefix'` (*replace this with the prefix to the dataset inside the bucket*)
+* `skin_cancer_files='dataverse_files'` (*replace this with name of the zip <ins>without</ins> extention*)
+* `skin_cancer_files_ext=dataverse_files.zip'` (*replace this with name of the zip with extention*)
 
 In the example above, the dataset would be stored under:
 `s3://monai-bucket-skin-cancer/skin_cancer_bucket_prefix/dataverse_files.zip`
 
 ![alt text](<pictures/screenshot dataset file.png>)
 
-10. Update line 127 in pipelines.py with URI of your docker created in **Step3.3**
-`preprocessing_image_uri = <uri-to-your-ecr-container>`
 
 #### V. Triggering a pipeline run  
 Pushing committed changes to the CodeCommit repository (done on the Studio source control tab) triggers a new pipeline run, because an Amazon EventBridge event monitors for commits. We can monitor the run by choosing the pipeline inside the SageMaker project.  
-![alt text](<pictures/screenshot commit and push.png>)
 
 1.  To commit the changes, navigate to the Git Section on the left panel and follow the steps:
     a.  Stage all changes. You don't need to keep track of the -checkpoint file. You can add an entry to .gitignore file with `*checkpoint.*` to ignore them.
     b.  Commit the changes by providing a Summary and your Name and an email address.
     c.  Push the changes.
+
+![alt text](<pictures/screenshot commit and push.png>)
 
 2. Navigate back to the project and select the **Pipelines** section.
 3. If you double click on the executing pipelines, the steps of the pipeline will appear. You will be able to monitor the step that is currently running.
@@ -91,9 +86,7 @@ Pushing committed changes to the CodeCommit repository (done on the Studio sourc
 ![alt text](<pictures/screenshot pipeline execution.PNG>)
 
 4.  When the pipeline is complete, you can go back to the project screen and choose the **Model groups** tab. You can then inspect the metadata attached to the model artifacts.
-
 5.  If everything looks good, you can click on the Update Status tab and manually approve the model. The default ModelApprovalStatus is set to PendingManualApproval. If our model has greater than 60% accuracy, it’s added to the model registry, but not deployed until manual approval is complete. You can then go to **Endpoints** in the SageMaker menu where you will see a staging endpoint being created. After a while the endpoint will be listed with the **InService** status.
-
 6. To deploy the endpoint into production, go to CodePipeline, click on the **modeldeploy** pipeline which is currently in progress. At the end of the DeployStaging phase, you need to manually approve the deployment. Once it is done you will see the production endpoint being deployed in the SageMaker Endpoints. After a while the endpoint will also be **InService**.
 
 ![alt text](<pictures/screenshot DeployStaging step.png>)
